@@ -1,244 +1,211 @@
- #include<stdio.h>
+#include<stdio.h>
 #include<stdlib.h>
+
 struct node
 {
-  int info;
-  struct node *next;
+    char usn[25],name[25],branch[25];
+    int sem;
+    long int phone;
+    struct node *link;
 };
-typedef struct node ll;
-ll *l;
-ll* getnode()
-{
- ll *p;
- p=(ll*)malloc(sizeof(ll));
- return p;
-}
- void inf(int x)
-{
-  ll *p;
-  p=getnode();
- if(p==NULL)
-{
- printf("out of memory\n");
- return;
-}
-else
-{
- p->info=x;
- p->next=NULL;
- if(l==NULL)
- l=p;
- else
- {
-  q=l;
-   while(q->next!=NULL)
-    q=q->next;
-    q->next=p;
-  }
- }
-}
-void ine(int x)
-{
- ll *p;
-  p=getnode();
- if(p==NULL)
-{
- printf("out of memory\n");
- return;
-}
- else
-{
- p->info=x;
- p->next=NULL;
- if(l==NULL)
- p->next=l;
- l=p;
- }
+typedef struct node * NODE;
 
- 
-void inatp(int x,int pos)
+NODE start = NULL;
+int count=0;
+
+
+NODE create()
 {
- ll *p,*temp;
- p=getnode();
- 
- if(p==NULL)
-{
- printf("out of memory\n");
- return;
+    NODE snode;
+    snode = (NODE)malloc(sizeof(struct node));
+
+    if(snode == NULL)
+    {
+        printf("\nMemory is not available");
+        exit(1);
+    }
+    printf("\nEnter the usn,Name,Branch, sem,PhoneNo of the student:");
+    scanf("%s %s %s %d %ld",snode->usn, snode->name, snode->branch, &snode->sem, &snode->phone);
+    snode->link=NULL;
+    count++;
+    return snode;
 }
-else
+
+NODE insertfront()
 {
- if(pos==1)
- inf(x);
-else
-{
- temp=l;
- p->info=x;
- p->next=NULL;
- if(pos==1)
- inf(x);
- else
-{
- p->info=x;
- p->next=NULL;
- for(int i=0;i<pos-2;;i++)
- {
-  if(temp!=NULL)
-  temp=temp->next;
- }
-if(temp==NULL)
-printf("position entered is greater than total elements in list\n");
-else
-{
- p->next=temp->next;
- temp->next=p;
- }
- }
- }
+    NODE temp;
+    temp = create();
+    if(start == NULL)
+    {
+           return temp;
+    }
+
+    temp->link = start;
+    return temp;
 }
-int delf()
+
+
+NODE deletefront()
 {
- ll *p;
- if(l==NULL)
-printf("not possible\n");
-else if(l->next==NULL)
-{
- printf("%d deleted\n",l->info);
- free(l);
+    NODE temp;
+    if(start == NULL)
+    {
+        printf("\nLinked list is empty");
+        return NULL;
+    }
+
+    if(start->link == NULL)
+    {
+            printf("\nThe Student node with usn:%s is deleted ",start->usn);
+            count--;
+            free(start);
+            return NULL;
+    }
+    temp = start;
+    start = start->link;
+    printf("\nThe Student node with usn:%s is deleted",temp->usn);
+    count--;
+    free(temp);
+    return start;
 }
-else
+
+NODE insertend()
 {
- 
- p=l;
- l=p->next;
- p->next=NULL;
-  printf("%d deleted\n",p->info);
- free(p);
- }
+    NODE cur,temp;
+    temp = create();
+
+    if(start == NULL)
+    {
+      return temp;
+    }
+    cur = start;
+    while(cur->link !=NULL)
+    {
+         cur = cur->link;
+    }
+    cur->link = temp;
+    return start;
 }
-void dele()
+
+NODE deleteend()
 {
- ll *p,*q;
-if(l==NULL)
-printf("not possible\n");
-else if(l->next==NULL)
-{
- printf("%d deleted\n",l->info);
- free(l);
+     NODE cur,prev;
+     if(start == NULL)
+     {
+        printf("\nLinked List is empty");
+        return NULL;
+     }
+
+     if(start->link == NULL)
+     {
+        printf("\nThe student node with the usn:%s is deleted",start->usn);
+        free(start);
+        count--;
+        return NULL;
+     }
+
+     prev = NULL;
+     cur = start;
+     while(cur->link!=NULL)
+     {
+         prev = cur;
+         cur = cur->link;
+     }
+
+      printf("\nThe student node with the usn:%s is deleted",cur->usn);
+      free(cur);
+      prev->link = NULL;
+      count--;
+      return start;
 }
- else
-{
- 
- p=l;
- while(q->next!=NULL)
- {
-  q=p;
-  p=p->next;
- }
-q->next=NULL;
-printf("%d deleted\n",p->info);
- free(p);
- }
-}
-void delatp(int pos)
-{
- ll *p,*temp;
- if(l==NULL)
- printf("not possible\n");
- else
- {
-   if(pos==1)
-    delf(x);
-  else
-{
- 
- for(int i=0;(i<=pos-2)&&(temp!=NULL);i++)
- {
-  p=temp;
-  if(temp!=NULL)
-  temp=temp->next;
- }
- if(temp==NULL)
- printf("position entered is greater than total elements in list\n");
- else
-{
-  printf("%d deleted\n",temp->info);
-  p->next=temp->next;
-  temp->next=NULL;
-   free(temp);
- }
-}
-}
-}
-void delkey(int key)
-{
- if(l==NULL)
- printf("not possible\n");
- else
-{
- ll *p,*q;
- q=l;
- while((q->info!=key)&&(q!=NULL))
-{
- p=q;
- q=q->next;
-}
-if(q==NULL)
-printf("not found\n");
-else
-{
- printf("%d deleted\n",q->info);
- p->next=q->next;
- q->next=NULL;
- free(q);
-}
-}
-}
+
 void display()
 {
- ll *p;
- p=l;
- while(p!=NULL)
-{
- printf("%d\t",p->info);
- p=p->next;
-}
-}
-void main()
-{
- int ch,x,y;
- printf("enter choice\n1.insert at front\n2.insert at end\n3.insert at pos\n4.del at front\n5.del at end\n6.del at pos\n7.del at key\n8.display\n9.exit\n");
- scanf("%d",&ch);
- switch(ch)
-{
- case 1: printf("enter element to be inserted \n");
-         scanf("%d",&x);
-         inf(x);
-         break;
- case 2: printf("enter element to be inserted \n");
-         scanf("%d",&x);
-         ine(x);
-         break;
- case 3: printf("enter element to be inserted & pos \n");
-         scanf("%d",&x,&y);
-         inatp(x,y);
-         break;
- case 4:delf();
-        break;
- case 5:dele();
-        break;
- case 6:printf("enter position\n");
-        scanf("%d",&x);
-        delatp(x);
-        break;
- case 7:printf("enter key\n");
-        scanf("%d",&x);
-        delkey(x);
-        break;
- case 8:display();
-        break;
- case 9:exit(0);
- default: printf("wrong choice\n");
-}
+    NODE cur;
+    int num=1;
+
+
+    if(start == NULL)
+    {
+
+        printf("\nNo Contents to display in SLL \n");
+        return;
+    }
+    printf("\nThe contents of SLL: \n");
+    cur = start;
+    while(cur!=NULL)
+    {
+       printf("\n||%d|| USN:%s| Name:%s| Branch:%s| Sem:%d| Ph:%ld|",num,cur->usn, cur->name,cur->branch, cur->sem,cur->phone);
+       cur = cur->link;
+       num++;
+    }
+    printf("\n No of student nodes is %d \n",count);
 }
 
+void stackdemo()
+{
+   int ch;
+   while(1)
+   {
+     printf("\n~~~Stack Demo using SLL~~~\n");
+     printf("\n1:Push operation \n2: Pop operation \n3: Display \n4:Exit \n");
+     printf("\nEnter your choice for stack demo");
+     scanf("%d",&ch);
+
+     switch(ch)
+     {
+        case 1: start = insertfront();
+                break;
+        case 2: start = deletefront();
+                break;
+        case 3: display();
+               break;
+       default : return;
+     }
+   }
+   return;
+}
+
+int main()
+{
+    int ch,i,n;
+    while(1)
+    {
+        printf("\n~~~Menu~~~");
+        printf("\nEnter your choice for SLL operation \n");
+        printf("\n1:Create SLL of Student Nodes");
+        printf("\n2:DisplayStatus");
+        printf("\n3:InsertAtEnd");
+        printf("\n4:DeleteAtEnd");
+        printf("\n5:Stack Demo using SLL(Insertion and Deletion at Front)");
+        printf("\n6:Exit \n");
+        printf("\nEnter your choice:");
+        scanf("%d",&ch);
+
+        switch(ch)
+        {
+        case 1 : printf("\nEnter the no of students:    ");
+                 scanf("%d",&n);
+                 for(i=1;i<=n;i++)
+                    start = insertfront();
+                 break;
+
+        case 2: display();
+                break;
+
+        case 3: start = insertend();
+                break;
+
+        case 4: start = deleteend();
+                break;
+
+        case 5: stackdemo();
+                break;
+
+        case 6: exit(0);
+
+        default: printf("\nPlease enter the valid choice");
+
+        }
+    }
+}
