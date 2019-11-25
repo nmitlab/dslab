@@ -1,109 +1,218 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
 
-typedef struct {
-    int info;
-} DATA;
+struct node
+{
+	int info;
+	struct node *link;
+};
 
-typedef struct node {
-    DATA data;
-    struct node *next;
-} NODE;
+struct node *create_list(struct node *last);
+void display(struct node *last);
+struct node *addtoempty(struct node *last,int data);
+struct node *addatbeg(struct node *last,int data);
+struct node *addatend(struct node *last,int data);
+struct node *addafter(struct node *last,int data,int item);
+struct node *del(struct node *last,int data);
 
-void insert(NODE *pointer, DATA data) {
-    NODE *start = pointer;
-    while (pointer->next != start) {
-        pointer = pointer -> next;
+main( )
+{
+	int choice,data,item;
+	struct node	*last=NULL;
+	
+	while(1)
+	{
+		printf("1.Create List\n");
+		printf("2.Display\n");
+		printf("3.Add to empty list\n");
+		printf("4.Add at beginning\n");
+		printf("5.Add at end\n");
+		printf("6.Add after \n");
+		printf("7.Delete\n");
+		printf("8.Quit\n");
+		
+		printf("Enter your choice : ");
+		scanf("%d",&choice);
+
+		switch(choice)
+		{
+		 case 1:
+			last=create_list(last);
+			break;
+		 case 2:
+			display(last);
+			break;
+		 case 3:
+			printf("Enter the element to be inserted : ");
+			scanf("%d",&data);
+			last=addtoempty(last,data);
+			break;
+		 case 4:
+			printf("Enter the element to be inserted : ");
+			scanf("%d",&data);
+			last=addatbeg(last,data);
+			break;
+		 case 5:
+			printf("Enter the element to be inserted : ");
+			scanf("%d",&data);
+			last=addatend(last,data);
+			break;
+		 case 6:
+			printf("Enter the element to be inserted : ");
+			scanf("%d",&data);
+			printf("Enter the element after which to insert : ");
+			scanf("%d",&item);
+			last=addafter(last,data,item);
+			break;
+		 case 7:
+			printf("Enter the element to be deleted : ");
+			scanf("%d",&data);
+			last=del(last,data);
+			break;
+		 case 8:
+		 	exit(1);
+		 default:
+			printf("Wrong choice\n");
+		}
     }
-    pointer->next = (NODE *) malloc(sizeof (NODE));
-    pointer = pointer->next;
-    pointer->data = data;
-    pointer->next = start;
+}
+struct node *create_list(struct node *last)
+{
+	int i,n,data;
+	printf("Enter the number of nodes : ");
+	scanf("%d",&n);
+	last=NULL;
+	if(n==0)
+		return last;
+	printf("Enter the element to be inserted : ");
+	scanf("%d",&data);
+	last=addtoempty(last,data);
+			
+	for(i=2;i<=n;i++)
+	{
+		printf("Enter the element to be inserted : ");
+		scanf("%d",&data);
+		last=addatend(last,data);	
+	}
+	return last;
 }
 
-int find(NODE *pointer, DATA key) {
-    NODE *start = pointer;
-    pointer = pointer -> next; //First node is dummy node.
-   
-    while (pointer != start) {
-        if (pointer->data.info == key.info) { //key is found.
-            return 1;
-        }
-        pointer = pointer -> next; //Search in the next node.
-    }
-    return 0;
+struct node *addtoempty(struct node *last,int data)
+{
+	struct node *tmp;
+	tmp=(struct node *)malloc(sizeof(struct node));
+	tmp->info=data;
+	last=tmp;
+	last->link=last;
+	return last;
 }
 
-void delete(NODE *pointer, DATA data) {
-    NODE *temp;
-    NODE *start = pointer;
-   
-    while (pointer->next != start &&
-            (pointer->next)->data.info != data.info) {
-        pointer = pointer -> next;
-    }
-    if (pointer->next == start) {
-        printf("Element %d is not present in the list\n", data.info);
-        return;
-    }
-  
-    temp = pointer -> next;
-   
-    pointer->next = temp->next;
-    free(temp);
-   
+struct node *addatbeg(struct node *last,int data)
+{
+	struct node *tmp;
+	tmp=(struct node *)malloc(sizeof(struct node));
+	tmp->info=data;
+	tmp->link=last->link;
+	last->link=tmp;
+	return last;
 }
 
-void print(NODE *start, NODE *pointer) {
-    if (pointer == start) {
-        return;
-    }
-    printf("\n%d ", pointer->data.info);
-    print(start , pointer->next);
+struct node *addatend(struct node *last,int data)
+{
+	struct node *tmp;
+	tmp=(struct node *)malloc(sizeof(struct node));
+	tmp->info=data;
+	tmp->link=last->link;
+	last->link=tmp;
+	last=tmp;
+	return last;
 }
 
-int main() {
-    int i, status;
-    DATA data;
-    NODE *start, *temp;
-    start = (NODE *) malloc(sizeof (NODE));
-    temp = start;
-    temp -> next = start;
-   
-  
-    for (i = 0; i < 20; i++) {  //Add
-        data.info = i;
-        insert(start, data);
-    }
-    do {
-        printf("What would you like to do ?\n");
-        printf("\t1 - Delete a node\n");
-        printf("\t2 - Print the list\n");
-        printf("\t3 - Search in the list\n");
-        printf("\t4 - Quit\n");
-        scanf("%d", &i);
-        switch (i) {
-            case 1: // DELETE
-                printf("\nEnter data to delete:\n");
-                scanf("%d", &data.info);
-                delete(start, data);
-                break;
-            case 2: //print
-                printf("The list is ");
-                print(start, start->next);
-                printf("\n");
-                break;
-            case 3: //find
-                printf("\nEnter data to find:\n");
-                scanf("%d", &data.info);
-                status = find(start, data);
-                if (status) {
-                    printf("Element Found\n");
-                } else {
-                    printf("Element Not Found\n");
-                }
-        }
-    } while (i < 4);
+struct node *addafter(struct node *last,int data,int item)
+{
+	struct node *tmp,*p;
+	p=last->link;
+	do
+	{
+		if(p->info==item)
+		{
+			tmp=(struct node *)malloc(sizeof(struct node));
+			tmp->info=data;
+			tmp->link=p->link;
+			p->link=tmp;
+			if(p==last)
+				last=tmp;
+			return last;
+		}
+		p=p->link;
+	}while(p!=last->link);
+	printf("%d not present in the list\n",item);
+	return last;
+}
 
-    return EXIT_SUCCESS;
+struct node *del(struct node *last,int data)
+{
+	struct node *tmp,*p;
+	if(last==NULL)
+	{
+		printf("List is empty\n");
+		return last;
+	}
+
+	if(last->link==last && last->info==data)  
+	{
+		tmp=last;
+		last=NULL;
+		free(tmp);
+		return last;
+	}
+
+	if(last->link->info==data)    
+	{
+		tmp=last->link;
+		last->link=tmp->link;
+		free(tmp);
+		return last;
+	}
+	
+	p=last->link;
+	while(p->link!=last)
+	{
+		if(p->link->info==data)     
+		{
+			tmp=p->link;
+			p->link=tmp->link;
+			free(tmp);
+			return last;
+		}
+		p=p->link;
+	}
+
+	if(last->info==data)    
+	{
+		tmp=last;
+		p->link=last->link;
+		last=p;
+		free(tmp);
+		return last;
+	}
+	printf("Element %d not found\n",data);
+	return last;
+}
+
+void display(struct node *last)
+{
+	struct node *p;
+	if(last==NULL)
+	{
+		printf("List is empty\n");
+		return;
+	}
+	p=last->link;
+	do 
+	{
+		printf("%d ",p->info);
+		p=p->link;
+	}while(p!=last->link);
+	printf("\n");
 }
