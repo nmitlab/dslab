@@ -1,218 +1,97 @@
-#include<stdio.h>
+
+#include <stdio.h>
 #include<stdlib.h>
+#include<stdio_ext.h>
+#define MAX 3
 
-struct node
+char cq[MAX];
+int front = -1, rear = -1;
+
+void insert(char);
+void delete();
+void display();
+void main()
 {
-	int info;
-	struct node *link;
-};
-
-struct node *create_list(struct node *last);
-void display(struct node *last);
-struct node *addtoempty(struct node *last,int data);
-struct node *addatbeg(struct node *last,int data);
-struct node *addatend(struct node *last,int data);
-struct node *addafter(struct node *last,int data,int item);
-struct node *del(struct node *last,int data);
-
-main( )
-{
-	int choice,data,item;
-	struct node	*last=NULL;
-	
-	while(1)
-	{
-		printf("1.Create List\n");
-		printf("2.Display\n");
-		printf("3.Add to empty list\n");
-		printf("4.Add at beginning\n");
-		printf("5.Add at end\n");
-		printf("6.Add after \n");
-		printf("7.Delete\n");
-		printf("8.Quit\n");
-		
-		printf("Enter your choice : ");
-		scanf("%d",&choice);
-
-		switch(choice)
-		{
-		 case 1:
-			last=create_list(last);
-			break;
-		 case 2:
-			display(last);
-			break;
-		 case 3:
-			printf("Enter the element to be inserted : ");
-			scanf("%d",&data);
-			last=addtoempty(last,data);
-			break;
-		 case 4:
-			printf("Enter the element to be inserted : ");
-			scanf("%d",&data);
-			last=addatbeg(last,data);
-			break;
-		 case 5:
-			printf("Enter the element to be inserted : ");
-			scanf("%d",&data);
-			last=addatend(last,data);
-			break;
-		 case 6:
-			printf("Enter the element to be inserted : ");
-			scanf("%d",&data);
-			printf("Enter the element after which to insert : ");
-			scanf("%d",&item);
-			last=addafter(last,data,item);
-			break;
-		 case 7:
-			printf("Enter the element to be deleted : ");
-			scanf("%d",&data);
-			last=del(last,data);
-			break;
-		 case 8:
-		 	exit(1);
-		 default:
-			printf("Wrong choice\n");
-		}
-    }
-}
-struct node *create_list(struct node *last)
-{
-	int i,n,data;
-	printf("Enter the number of nodes : ");
-	scanf("%d",&n);
-	last=NULL;
-	if(n==0)
-		return last;
-	printf("Enter the element to be inserted : ");
-	scanf("%d",&data);
-	last=addtoempty(last,data);
-			
-	for(i=2;i<=n;i++)
-	{
-		printf("Enter the element to be inserted : ");
-		scanf("%d",&data);
-		last=addatend(last,data);	
-	}
-	return last;
+             int ch;
+             char item;
+             while(1)
+             {
+                            printf("\n\n~~Main Menu~~");
+                            printf("\n==> 1. Insertion and Overflow Demo");
+                            printf("\n==> 2. Deletion and Underflow Demo");
+                            printf("\n==> 3. Display");
+                            printf("\n==> 4. Exit");
+                            printf("\nEnter Your Choice: ");
+                            scanf("%d", &ch);
+                            __fpurge(stdin);
+                           switch(ch)
+                          {
+                                           case 1:        printf("\n\nEnter the element to be inserted: ");
+                                                              scanf("%c", &item);
+                                                              insert(item);
+                                                              break;
+                                           case 2:        delete();
+                                                              break;
+                                           case 3:        display();
+                                                              break;
+                                            case 4:       exit(0);
+                                            default:      printf("\n\nPlease enter a valid choice");
+                            }
+               }
 }
 
-struct node *addtoempty(struct node *last,int data)
+void insert(char item)
 {
-	struct node *tmp;
-	tmp=(struct node *)malloc(sizeof(struct node));
-	tmp->info=data;
-	last=tmp;
-	last->link=last;
-	return last;
+                 if(front == (rear+1)%MAX)
+                 {
+                              printf("\n\n~~Circular Queue Overflow~~");
+                 }
+                 else
+                 {
+                             if(front == -1)
+                                             front = rear = 0;
+                             else
+                                              rear = (rear+1)%MAX;
+                             cq[rear] = item;
+                  }
 }
 
-struct node *addatbeg(struct node *last,int data)
+void delete()
 {
-	struct node *tmp;
-	tmp=(struct node *)malloc(sizeof(struct node));
-	tmp->info=data;
-	tmp->link=last->link;
-	last->link=tmp;
-	return last;
+                char item;
+                if(front == -1)
+                {
+                              printf("\n\n~~Circular Queue Underflow~~");
+                }
+                else
+                {
+                               item = cq[front];
+                               printf("\n\nDeleted element from the queue is: %c ",item );
+                               
+                               if(front == rear) //only one element
+                                                front = rear = -1;
+                               else
+                                               front = (front+1)%MAX;
+                 }
 }
 
-struct node *addatend(struct node *last,int data)
+
+void display ()
 {
-	struct node *tmp;
-	tmp=(struct node *)malloc(sizeof(struct node));
-	tmp->info=data;
-	tmp->link=last->link;
-	last->link=tmp;
-	last=tmp;
-	return last;
-}
-
-struct node *addafter(struct node *last,int data,int item)
-{
-	struct node *tmp,*p;
-	p=last->link;
-	do
-	{
-		if(p->info==item)
-		{
-			tmp=(struct node *)malloc(sizeof(struct node));
-			tmp->info=data;
-			tmp->link=p->link;
-			p->link=tmp;
-			if(p==last)
-				last=tmp;
-			return last;
-		}
-		p=p->link;
-	}while(p!=last->link);
-	printf("%d not present in the list\n",item);
-	return last;
-}
-
-struct node *del(struct node *last,int data)
-{
-	struct node *tmp,*p;
-	if(last==NULL)
-	{
-		printf("List is empty\n");
-		return last;
-	}
-
-	if(last->link==last && last->info==data)  
-	{
-		tmp=last;
-		last=NULL;
-		free(tmp);
-		return last;
-	}
-
-	if(last->link->info==data)    
-	{
-		tmp=last->link;
-		last->link=tmp->link;
-		free(tmp);
-		return last;
-	}
-	
-	p=last->link;
-	while(p->link!=last)
-	{
-		if(p->link->info==data)     
-		{
-			tmp=p->link;
-			p->link=tmp->link;
-			free(tmp);
-			return last;
-		}
-		p=p->link;
-	}
-
-	if(last->info==data)    
-	{
-		tmp=last;
-		p->link=last->link;
-		last=p;
-		free(tmp);
-		return last;
-	}
-	printf("Element %d not found\n",data);
-	return last;
-}
-
-void display(struct node *last)
-{
-	struct node *p;
-	if(last==NULL)
-	{
-		printf("List is empty\n");
-		return;
-	}
-	p=last->link;
-	do 
-	{
-		printf("%d ",p->info);
-		p=p->link;
-	}while(p!=last->link);
-	printf("\n");
+                   int i ;
+                   if(front == -1)
+                   {
+                                 printf("\n\nCircular Queue Empty");
+                   }
+                   else
+                   {
+                                printf("\nCircular Queue contents are:\n");
+                                printf("Front[%d]-> ", front);
+                               for(i = front; i != rear ; i = (i+1)%MAX)
+                               {
+                                                   printf(" %c", cq[i]);
+                               }
+                               printf(" %c", cq[i]);
+                               printf(" <-[%d]Rear", rear);
+                    }
 }
