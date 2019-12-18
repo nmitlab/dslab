@@ -34,7 +34,7 @@ deletion ()
       printf ("Queue Underflow\n");
       return;
     }
-  printf ("Element deleted from queue is : %d\n", cqueue_arr[front]);
+  printf ("Element deleted is : %d\n", cqueue_arr[front]);
   if (front == rear)
     {
       front = -1;
@@ -87,16 +87,13 @@ main ()
   int choice, item;
   do
     {
-      printf ("1.Insert\n");
-      printf ("2.Delete\n");
-      printf ("3.Display\n");
-      printf ("4.Quit\n");
+      printf ("1.Insert\n 2.Delete\n 3.Display\n 4.Quit\n");
       printf ("Enter your choice : ");
       scanf ("%d", &choice);
       switch (choice)
 	{
 	case 1:
-	  printf ("Input the element for insertion in queue : ");
+	  printf ("ENter the element : ");
 	  scanf ("%d", &item);
 	  insert (item);
 	  break;
